@@ -2,6 +2,8 @@
 *.db
 .minio.sys/
 .env
+.gradle
+.idea
 streets-data/
 source-data/pedestrian/
 source-data/*.json
