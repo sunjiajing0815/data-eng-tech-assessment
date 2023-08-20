@@ -13,6 +13,11 @@ import org.apache.beam.sdk.transforms.SerializableFunction;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 
+/**
+ * A Transform that converts a PCollection containing contains one list of PedestrianRecord objects
+ * into a PCollection of one Json string to be written out to a text file
+ *
+ */
 public class WritePedRecordToJsonString extends
     PTransform<PCollection<List<PedestrianRecord>>, PCollection<String>> {
   @Override

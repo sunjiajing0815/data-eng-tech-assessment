@@ -10,6 +10,11 @@ import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 
+/**
+ * A Transform that converts a PCollection containing one Json String  into a PCollection
+ * of key value pairs of locationids and SensorLocationRecord objects
+ *
+ */
 public class LoadSensorRecord extends
     PTransform<PCollection<String>, PCollection<KV<String, SensorLocationRecord>>> {
   @Override

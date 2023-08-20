@@ -8,6 +8,10 @@ import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionView;
 
+/**
+ * EnrishPedestrainData is a class that contains a static function that applies transformations on
+ * [PedestrianRecord] and [sensorLocationView] to enrich PedestrianRecord with location name
+ */
 public class EnrishPedestrainData {
   public static PCollection<PedestrianRecord> enrichPedestrianRecord(
       PCollection<PedestrianRecord> pedRecords, PCollectionView<Map<String, SensorLocationRecord>> sensorLocationView) {
@@ -18,9 +22,12 @@ public class EnrishPedestrainData {
       public void processElement(@Element PedestrianRecord pedRecord, OutputReceiver<PedestrianRecord> out,
           ProcessContext context) {
         Map<String, SensorLocationRecord> sensorLocation = context.sideInput(sensorLocationView);
+        SensorLocationRecord sensor;
         String locationid = pedRecord.getLocationid();
-        SensorLocationRecord sensor = sensorLocation.get(locationid);
-        pedRecord.setLocationName(sensor.getLocationName());
+        if(sensorLocation.containsKey(locationid)) {
+          sensor = sensorLocation.get(locationid);
+          pedRecord.setLocationName(sensor.getLocationName());
+        }
         out.output(pedRecord);
       }
 

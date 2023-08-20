@@ -40,22 +40,28 @@ public class PedestrianDataProcessor{
   private static final Logger LOG = LoggerFactory.getLogger(PedestrianDataProcessor.class);
 
   public static void main(String[] args) {
+
     PedestrianDataOptions options = PipelineOptionsFactory.fromArgs(args).create().as(
         PedestrianDataOptions.class);
     Pipeline pipeline = Pipeline.create(options);
+
+    // 1. Load pedestrian-counting-system-monthly-counts-per-hour.json into pedRecords
     PCollection<PedestrianRecord> pedRecords = pipeline.apply("ReadPedestrianRecordJSON", TextIO.read().from(options.getPedJsonFile()))
         .apply(new LoadPedRecord());
-
+    // 2. Load pedestrian-counting-system-sensor-locations.json into sensorRecords as map
     PCollection<KV<String, SensorLocationRecord>> sensorRecords = pipeline.apply("ReadSensorRecordJSON", TextIO.read().from(options.getSensorJsonFile()))
         .apply(new LoadSensorRecord());
-
+    // 3. Load sensorRecords into sensorLocationView as materialized view
     PCollectionView<Map<String, SensorLocationRecord>> sensorLocationView = sensorRecords.apply(View.asMap());
-
+    // 4. Enrich pedRecords with sensorLocationView
     PCollection<PedestrianRecord> output = enrichPedestrianRecord(pedRecords, sensorLocationView);
+    // 5. Combine all pedRecords into one list
     PCollection<List<PedestrianRecord>> PedRecordList = output.apply(Combine.globally(new CombinePedRecord()));
+    // 6. Dump PedestrianRecord List into Json and write to output file
     PedRecordList.apply("LoadResultToJsonString", new WritePedRecordToJsonString())
         .apply("WriteResult", TextIO.write().withSuffix(".json").to(options.getOutput()));
-    pipeline.run();
+
+    pipeline.run().waitUntilFinish();;
   }
 
 

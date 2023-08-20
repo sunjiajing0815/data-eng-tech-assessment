@@ -9,6 +9,11 @@ import org.apache.beam.sdk.transforms.PTransform;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
 
+/**
+ * A Transform that converts a PCollection containing one Json String  into a PCollection
+ * of PedestrianRecord objects
+ *
+ */
 public class LoadPedRecord extends PTransform<PCollection<String>, PCollection<PedestrianRecord>> {
   @Override
   public PCollection<PedestrianRecord> expand(PCollection<String> lines) {

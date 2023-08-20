@@ -7,6 +7,7 @@ import java.util.Map;
 import melpedestrian.schemas.PedestrianRecord;
 import melpedestrian.schemas.SensorLocationRecord;
 import melpedestrian.PedestrianDataProcessor;
+import org.apache.beam.sdk.coders.VoidCoder;
 import org.apache.beam.sdk.testing.PAssert;
 import org.apache.beam.sdk.testing.TestPipeline;
 import org.apache.beam.sdk.transforms.Count;
@@ -15,6 +16,7 @@ import org.apache.beam.sdk.transforms.View;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionView;
+import org.apache.beam.sdk.values.TypeDescriptor;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +53,18 @@ public class PedestrianDataProcessorTest {
         View.asMap());
     PCollection<PedestrianRecord> output = enrichPedestrianRecord(pedRecords, sensorLocationView);
     PAssert.that(output).containsInAnyOrder(pedRecordTargetList);
+    PCollection<Long> count = output.apply(Count.globally());
+    PAssert.that(count).containsInAnyOrder((Long.valueOf(4)));
+    p.run().waitUntilFinish();
+  }
+  @Test
+  public void testEnrichPedestrianRecordMissedLocationInfo() throws Exception {
+    PCollection<PedestrianRecord> pedRecords = p.apply("LoadPedRecords",Create.of(pedRecordList));
+    PCollection<KV<String, SensorLocationRecord>> sensorMaps = p.apply("LoadSensorRecords",Create.empty(new TypeDescriptor<KV<String, SensorLocationRecord>>() {}));
+    PCollectionView<Map<String, SensorLocationRecord>> sensorLocationView = sensorMaps.apply(
+        View.asMap());
+    PCollection<PedestrianRecord> output = enrichPedestrianRecord(pedRecords, sensorLocationView);
+    PAssert.that(output).containsInAnyOrder(pedRecordList);
     PCollection<Long> count = output.apply(Count.globally());
     PAssert.that(count).containsInAnyOrder((Long.valueOf(4)));
     p.run().waitUntilFinish();

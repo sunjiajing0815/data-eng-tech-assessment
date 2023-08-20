@@ -5,6 +5,11 @@ import java.util.List;
 import melpedestrian.schemas.PedestrianRecord;
 import org.apache.beam.sdk.transforms.Combine.CombineFn;
 
+/**
+ * A CombineFn that converts a PCollection containing PedestrianRecord objects into a PCollection
+ * contains one list of PedestrianRecord objects
+ *
+ */
 public class CombinePedRecord extends CombineFn<PedestrianRecord, List<PedestrianRecord>, List<PedestrianRecord>> {
 
   @Override
