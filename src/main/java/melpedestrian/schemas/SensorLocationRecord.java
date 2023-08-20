@@ -34,4 +34,9 @@ public class SensorLocationRecord implements Serializable {
             ", sensor_name='" + sensorName + '\'' +
             '}';
     }
+
+    public SensorLocationRecord(String locationid, String locationName){
+        this.locationid = locationid;
+        this.locationName = locationName;
+    }
 }

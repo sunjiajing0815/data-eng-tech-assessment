@@ -26,6 +26,7 @@ dependencies {
     api("org.apache.beam:beam-sdks-java-io-google-cloud-platform:2.49.0")
     api("org.apache.beam:beam-sdks-java-extensions-python:2.49.0")
     api("org.apache.beam:beam-sdks-java-io-kafka:2.49.0")
+    api("org.apache.beam:beam-runners-spark-3:2.49.0")
     api("com.google.api-client:google-api-client:2.0.0")
     api("com.google.apis:google-api-services-bigquery:v2-rev20220924-2.0.0")
     api("com.google.http-client:google-http-client:1.43.1")

@@ -14,6 +14,8 @@ package melpedestrian;// Licensed to the Apache Software Foundation (ASF) under 
 // limitations under the License.
 
 
+import static melpedestrian.transforms.EnrishPedestrainData.enrichPedestrianRecord;
+
 import java.util.List;
 import java.util.Map;
 import melpedestrian.options.PedestrianDataOptions;
@@ -53,34 +55,10 @@ public class PedestrianDataProcessor{
     PCollection<List<PedestrianRecord>> PedRecordList = output.apply(Combine.globally(new CombinePedRecord()));
     PedRecordList.apply("LoadResultToJsonString", new WritePedRecordToJsonString())
         .apply("WriteResult", TextIO.write().withSuffix(".json").to(options.getOutput()));
-    /*
-    final PTransform<PCollection<PedestrianRecord>, PCollection<Iterable<PedestrianRecord>>> sample = Sample.fixedSizeGlobally(10);
-    PCollection<List<PedestrianRecord>> PedRecordList = output.apply(sample)
-        .apply(Flatten.iterables())
-        .apply(Combine.globally(new CombinePedRecord()));
-    PCollection<String> results = PedRecordList.apply("LoadResultToJsonString", new WritePedRecordToJsonString())
-        .apply("Log", ParDo.of(new PedestrianDataProcessor.LogOutput<String>()));
-  */
     pipeline.run();
   }
 
-  static PCollection<PedestrianRecord> enrichPedestrianRecord(
-      PCollection<PedestrianRecord> pedRecords, PCollectionView<Map<String, SensorLocationRecord>> sensorLocationView) {
 
-    return pedRecords.apply(ParDo.of(new DoFn<PedestrianRecord, PedestrianRecord>() {
-      // Get city from person and get from city view
-      @ProcessElement
-      public void processElement(@Element PedestrianRecord pedRecord, OutputReceiver<PedestrianRecord> out,
-          ProcessContext context) {
-        Map<String, SensorLocationRecord> sensorLocation = context.sideInput(sensorLocationView);
-        String locationid = pedRecord.getLocationid();
-        SensorLocationRecord sensor = sensorLocation.get(locationid);
-        pedRecord.setLocationName(sensor.getLocationName());
-        out.output(pedRecord);
-      }
-
-    }).withSideInputs(sensorLocationView));
-  }
 
   static class LogOutput<T> extends DoFn<T, T> {
     private String prefix;

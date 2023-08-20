@@ -24,7 +24,7 @@ public interface PedestrianDataOptions extends PipelineOptions{
 
   /** Set this required option to specify where to write the output. */
   @Description("Path of the file to write to")
-  @Default.String("pedestrian-counting-system-monthly-counts-per-hour-w-location")
+  @Default.String("output-data/pedestrian-counting-system-monthly-counts-per-hour-w-location")
   String getOutput();
 
   void setOutput(String value);

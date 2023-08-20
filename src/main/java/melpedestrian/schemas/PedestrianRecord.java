@@ -28,7 +28,10 @@ public class PedestrianRecord implements Serializable{
     PedestrianRecord pedRecord = (PedestrianRecord) o;
 
     return Objects.equals(timestamp, pedRecord.timestamp) &&
-        Objects.equals(locationid, pedRecord.locationid);
+        Objects.equals(locationid, pedRecord.locationid) &&
+        Objects.equals(direction1, pedRecord.direction1) &&
+        Objects.equals(direction2, pedRecord.direction2) &&
+        Objects.equals(totalOfDirections, pedRecord.totalOfDirections);
   }
   @Override
   public String toString() {
@@ -40,5 +43,14 @@ public class PedestrianRecord implements Serializable{
         ", direction_2='" + direction2 + '\'' +
         ", total_of_directions='" + totalOfDirections + '\'' +
         '}';
+  }
+  public PedestrianRecord(String timestamp, String locationid, String locationName){
+    this.timestamp = timestamp;
+    this.locationid = locationid;
+    this.locationName = locationName;
+  }
+  public PedestrianRecord(String timestamp, String locationid){
+    this.timestamp = timestamp;
+    this.locationid = locationid;
   }
 }
